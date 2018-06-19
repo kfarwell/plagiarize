@@ -1,0 +1,14 @@
+fn plagiarize {
+    echo '&lt;div class="article"&gt;'
+    echo '&lt;h'`{echo $i | cut -d , -f 2}'&gt;'
+    echo $i | cut -d , -f 3 | sed -i 's/_/ /g'
+    echo '&lt;/h'`{echo $i | cut -d , -f 2}'&gt;'
+    if(test ! -z `{echo $i | cut -d , -f 5}) echo '&lt;a href="img/'`{echo $i | cut -d , -f 3}'.'`{echo $i | cut -d , -f 5}'"&gt;&lt;img class="normimg" src="img/resized_'`{echo $i | cut -d , -f 3}'.'`{echo $i | cut -d , -f 5}'" alt="'`{echo $i | cut -d , -f 3}'" /&gt;&lt;/a&gt;'
+    if(test ! -z `{echo $i | cut -d , -f 4}) curl http://en.wikipedia.org/wiki/`{echo $i | cut -d , -f 4} | head -n `{curl http://en.wikipedia.org/wiki/`{echo $i | cut -d , -f 4} | grep -n \"toc\" | cut -d : -f 1} | grep '^&lt;p&gt;'  | head -n -1 | sed -i 's/&lt;a /&lt;span /g' | sed -i 's/&lt;\/a&gt;/&lt;\/span&gt;/g' | sed -i 's/&lt;sup /&lt;sup style="display:none" /g' | sed -i 's/&lt;p&gt;In development&lt;\/p&gt;//g'
+    echo '&lt;/div&gt;'
+}
+
+for(i in `{run_handler $handler_body_main}) {
+    if(test ! -z `{echo $i | grep '^%'}) plagiarize
+    if not echo $i
+}
